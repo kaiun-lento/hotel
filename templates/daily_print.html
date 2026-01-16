@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <title>日別予約一覧 {{ date_str }}</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans JP", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif; }
+    h1 { margin: 0 0 8px 0; font-size: 18px; }
+    .venue { margin-top: 18px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid #333; padding: 4px; font-size: 12px; vertical-align: top; }
+    th { background: #f0f0f0; }
+    tr.row { height: 30px; }
+    @media print {
+      @page { size: A4; margin: 10mm; }
+      tr.row { page-break-inside: avoid; }
+      .venue { page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <h1>予約台帳（日別） {{ date_str }}</h1>
+  {% for venue in venues %}
+    <div class="venue">
+      <h2 style="font-size: 14px; margin: 6px 0;">{{ venue.name }}</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 15%">宴会名</th>
+            <th style="width: 13%">時間</th>
+            <th style="width: 8%">人数</th>
+            <th style="width: 14%">TEL</th>
+            <th style="width: 22%">料理</th>
+            <th style="width: 10%">金額</th>
+            <th>備考</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if venue.reservations|length == 0 %}
+            <tr class="row"><td colspan="7" style="text-align:center;">（予約なし）</td></tr>
+          {% endif %}
+          {% for r in venue.reservations %}
+            <tr class="row">
+              <td>{{ r.banquet_name }}</td>
+              <td>{{ r.time_range }}</td>
+              <td style="text-align:right;">{{ r.people_count }}</td>
+              <td>{{ r.phone }}</td>
+              <td>{{ r.menu_summary }}</td>
+              <td style="text-align:right;">{{ r.total_price }}</td>
+              <td>{{ r.note }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% endfor %}
+</body>
+</html>
